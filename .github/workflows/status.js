@@ -29,14 +29,13 @@ module.exports = async ({github, context, core, diff}) => {
         let raw;
         try {
             raw = await github.request(file.raw_url);
-            console.log(raw);
         } catch (e) {
             console.error(e);
             addError('Could not retrieve translated file');
         }
         try {
             if (raw !== undefined) {
-                const parsed = JSON.parse(raw);
+                const parsed = JSON.parse(raw.data);
 
                 const diffe = diff.getDiff(english, parsed, true);
                 console.log(diffe);
