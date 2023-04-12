@@ -26,7 +26,7 @@ module.exports = async ({github, context, core, diff}) => {
     });
     console.log(files);
 
-    for (const file in files) {
+    for (const file in files.data) {
         console.log(file);
         let raw;
         try {
