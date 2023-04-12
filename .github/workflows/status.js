@@ -56,8 +56,8 @@ module.exports = async ({github, context, core, diff}) => {
 
         await github.rest.issues.createComment({
             issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
+            owner: "joethei",
+            repo: "obsidian-translations",
             body: message
         });
         core.setFailed("Failed to validate theme");
