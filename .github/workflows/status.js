@@ -26,11 +26,10 @@ module.exports = async ({github, context, core, diff}) => {
     });
 
     for (const file of files.data) {
-        console.log(file);
         let raw;
         try {
             raw = await github.request(file.raw_url);
-            console.log(file.raw_url);
+            console.log(rawr);
         } catch (e) {
             console.error(e);
             addError('Could not retrieve translated file');
