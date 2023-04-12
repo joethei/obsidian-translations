@@ -19,12 +19,12 @@ module.exports = async ({github, context, core, diff}) => {
 
     const english = JSON.parse(fs.readFileSync('en.json', 'utf8'));
 
-    // todo: update owner before PR
     const files = await github.rest.pulls.listFiles({
         owner: context.repo.owner,
         repo: context.repo.repo,
         pull_number: context.issue.number
     });
+    console.log(files);
 
     for (const file in files) {
         console.log(file);
