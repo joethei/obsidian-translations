@@ -27,6 +27,8 @@ module.exports = async ({github, context, core, diff}) => {
 
     let stats;
     let prStats;
+    let totalValues;
+    let prValues;
     for (const file of files.data) {
         let raw;
         try {
@@ -50,6 +52,9 @@ module.exports = async ({github, context, core, diff}) => {
                     removed: diffe.removed.length,
                     edited: diffe.edited.length,
                 };
+
+                totalValues = Object.values(english).length;
+                prValues = Object.values(parsed).length;
             }
         } catch (e) {
             console.error(e);
@@ -77,6 +82,8 @@ module.exports = async ({github, context, core, diff}) => {
     }
     console.log(stats);
     console.log(prStats);
+    console.log(totalValues);
+    console.log(prValues);
     message.push(`Some stats:\n - Added: ${prStats.additions}\n - Removed: ${prStats.deletions}\n - Changed ${prStats.changes}`);
     message.push(`more stats:\n - Added: ${stats.added}\n - Removed: ${stats.removed}\n - Changed ${stats.edited}`);
 
