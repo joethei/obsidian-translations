@@ -54,8 +54,8 @@ module.exports = async ({github, context, core, diff}) => {
                 };
 
 
-                totalValues = getCount(english);
-                prValues = getCount(parsed);
+                totalValues = keyify(english).length;
+                prValues = keyify(parsed).length;
             }
         } catch (e) {
             console.error(e);
@@ -95,12 +95,14 @@ module.exports = async ({github, context, core, diff}) => {
         body: message
     });
 
-    function getCount(obj) {
-        return Object.values(obj)
-        .reduce((c, o) => c + Object.values(o)
-                .reduce((c, a) => c + a.length,
-                        0),
-                0);
-    }
-
 }
+
+const keyify = (obj, prefix = '') =>
+  Object.keys(obj).reduce((res, el) => {
+      if( Array.isArray(obj[el]) ) {
+          return res;
+      } else if( typeof obj[el] === 'object' && obj[el] !== null ) {
+          return [...res, ...keyify(obj[el], prefix + el + '.')];
+      }
+      return [...res, prefix + el];
+      }, []);
