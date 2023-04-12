@@ -1,12 +1,12 @@
 name: Translation status
 
 on:
-  pull_request_target:
+  pull_request:
     branches:
-      - master
+      - "master"
 
 jobs:
-  plugin-validation:
+  pr-validation:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,7 +17,7 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            const script = require('./status.js');
+            const script = require('./.github/workflows/status.js');
             const diff = require('json-difference');
             return await script({github, context, core, diff});
     permissions:
