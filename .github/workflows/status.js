@@ -27,6 +27,7 @@ module.exports = async ({github, context, core, diff}) => {
     });
 
     for (const file in files) {
+        console.log(file);
         let raw;
         try {
             raw = await github.request(file.raw_url);
