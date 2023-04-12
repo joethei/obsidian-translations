@@ -95,12 +95,12 @@ module.exports = async ({github, context, core, diff}) => {
         body: message
     });
 
-}
-
-function getCount(obj) {
-    return Object.values(obj)
+    function getCount(obj) {
+        return Object.values(obj)
         .reduce((c, o) => c + Object.values(o)
                 .reduce((c, a) => c + a.length,
-                    0),
-            0);
+                        0),
+                0);
+    }
+
 }
