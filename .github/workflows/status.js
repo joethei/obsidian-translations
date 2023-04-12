@@ -19,21 +19,31 @@ module.exports = async ({github, context, core, diff}) => {
 
     const english = JSON.parse(fs.readFileSync('en.json', 'utf8'));
 
-    const pr = context.payload.pull_request.number;
-
     // todo: update owner before PR
-    const files = await github.rest.pulls.listFiles({owner: "joethei", repo: "obsidian-translations", pull_number: pr});
+    const files = await github.rest.pulls.listFiles({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        pull_number: context.issue.number
+    });
 
     for (const file in files) {
+        let raw;
         try {
-            const raw = fetch(file.raw_url);
-            const parsed = JSON.parse(raw);
-            
-            const diffe = diff.getDiff(english, parsed, true);
-            console.log(diffe);
-            
+            raw = fetch(file.raw_url);
         } catch (e) {
-            addError('Could not retrieve or parse translated file');
+            console.error(e);
+            addError('Could not retrieve translated file');
+        }
+        try {
+            if (raw !== undefined) {
+                const parsed = JSON.parse(raw);
+
+                const diffe = diff.getDiff(english, parsed, true);
+                console.log(diffe);
+            }
+        } catch (e) {
+            console.error(e);
+            addError('Could not parse translated file');
         }
 
     }
@@ -56,8 +66,8 @@ module.exports = async ({github, context, core, diff}) => {
 
         await github.rest.issues.createComment({
             issue_number: context.issue.number,
-            owner: "joethei",
-            repo: "obsidian-translations",
+            owner: context.repo.owner,
+            repo: context.repo.repo,
             body: message
         });
         core.setFailed("Failed to validate theme");

@@ -21,6 +21,6 @@ jobs:
             const diff = require('json-difference');
             return await script({github, context, core, diff});
     permissions:
-      contents: write
+      contents: read
       issues: write
       pull-requests: write
