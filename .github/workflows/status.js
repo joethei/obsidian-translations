@@ -22,7 +22,7 @@ module.exports = async ({github, context, core, diff}) => {
     const pr = context.payload.pull_request.number;
 
     // todo: update owner before PR
-    const files = await github.rest.pulls.listFiles({"joethei", "obsidian-translations", pull_number: pr});
+    const files = await github.rest.pulls.listFiles({owner: "joethei", repo: "obsidian-translations", pull_number: pr});
 
     for (const file in files) {
         try {
