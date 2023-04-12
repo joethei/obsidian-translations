@@ -25,10 +25,17 @@ module.exports = async ({github, context, core, diff}) => {
         pull_number: context.issue.number
     });
 
+    let stats;
+    let prStats;
     for (const file of files.data) {
         let raw;
         try {
             raw = await github.request(file.raw_url);
+            prStats = {
+                additions: file.additions,
+                deletions: file.deletions,
+                changes: file.changes,
+            }
         } catch (e) {
             console.error(e);
             addError('Could not retrieve translated file');
@@ -38,7 +45,11 @@ module.exports = async ({github, context, core, diff}) => {
                 const parsed = JSON.parse(raw.data);
 
                 const diffe = diff.getDiff(english, parsed, true);
-                console.log(diffe);
+                stats = {
+                    added: diffe.added.length,
+                    removed: diffe.removed.length,
+                    edited: diffe.edited.length,
+                };
             }
         } catch (e) {
             console.error(e);
@@ -46,9 +57,10 @@ module.exports = async ({github, context, core, diff}) => {
         }
 
     }
+    let message = [`#### Hello!\n`];
 
     if (errors.length > 0 || warnings.length > 0) {
-        let message = [`#### Hello!\n`];
+
         message.push(`**I found the following issues in your translation**\n`);
         if (errors.length > 0) {
             message.push(`**Errors:**\n`);
@@ -60,15 +72,21 @@ module.exports = async ({github, context, core, diff}) => {
             message = message.concat(warnings);
             message.push(`\n---\n`);
         }
+
         message.push(`<sup>This check was done automatically. Do <b>NOT</b> open a new PR for re-validation. Instead, to trigger this check again, make a change to your PR and wait a few minutes, or close and re-open it.</sup>`);
-
-
-        await github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: message
-        });
-        core.setFailed("Failed to validate theme");
     }
+    console.log(stats);
+    console.log(prStats);
+    message.push(`Some stats:\n - Added: ${prStats.additions}\n - Removed: ${prStats.deletions}\n - Changed ${prStats.changes}`);
+    message.push(`more stats:\n - Added: ${stats.added}\n - Removed: ${stats.removed}\n - Changed ${stats.edited}`);
+
+    await github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: message
+    });
+
+
+
 }
