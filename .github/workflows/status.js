@@ -53,8 +53,9 @@ module.exports = async ({github, context, core, diff}) => {
                     edited: diffe.edited.length,
                 };
 
-                totalValues = Object.values(english).length;
-                prValues = Object.values(parsed).length;
+
+                totalValues = getCount(english);
+                prValues = getCount(parsed);
             }
         } catch (e) {
             console.error(e);
@@ -94,6 +95,12 @@ module.exports = async ({github, context, core, diff}) => {
         body: message
     });
 
+}
 
-
+function getCount(obj) {
+    return Object.values(obj)
+        .reduce((c, o) => c + Object.values(o)
+                .reduce((c, a) => c + a.length,
+                    0),
+            0);
 }
