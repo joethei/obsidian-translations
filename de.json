@@ -1,5 +1,6 @@
 {
 	"setting": {
+		"hello": "world",
 		"options": "Optionen",
 		"plugin": "Erweiterungen",
 		"builtin-plugins": "Obsidian-Erweiterungen",
